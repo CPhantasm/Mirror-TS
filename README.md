@@ -19,7 +19,7 @@ Interested in adding Mirror to your server? Click [here](https://discord.com/api
 
 ### Introthemes
 
-Set a personal intro theme with [`/intro`](src/slashcommands/Intro.ts) by uploading a short audio or video clip — Mirror trims it to the first 10 seconds and plays it whenever you join the voice channel Mirror is sitting in (configure that channel with [`/defaultvc`](src/slashcommands/DefaultVc.ts)). Managers can clear a member's intro with [`/removeintro`](src/slashcommands/RemoveIntro.ts).
+Set a personal intro theme with [`/intro set`](src/slashcommands/Intro.ts) by uploading a short audio or video clip — Mirror trims it to the first 10 seconds and plays it whenever you join the voice channel Mirror is in. Remove your own with `/intro remove`. Get Mirror into a channel on demand with [`/join`](src/slashcommands/Join.ts) (it hops into your current voice channel), or give it a permanent home with [`/defaultvc`](src/slashcommands/DefaultVc.ts). Managers can clear any member's intro with [`/removeintro`](src/slashcommands/RemoveIntro.ts).
 
 ### Birthdays
 

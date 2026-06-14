@@ -1,6 +1,7 @@
 //Call: Slash command intro
-//Sets a user's intro theme from an uploaded audio/video clip. The clip is trimmed to the
-//first 10 seconds and normalized to AAC so the existing VoiceStateUpdate playback can use it.
+//  /intro set    -> upload an audio/video clip; trimmed to 10s and saved as the user's intro theme
+//  /intro remove -> delete the user's own intro theme
+//Playback is handled by VoiceStateUpdate, which reads data/intros/{guild}/{user}.mp4.
 import {
 	ChatInputCommandInteraction,
 	CacheType,
@@ -21,15 +22,17 @@ const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // 8 MB
 
 export class Intro implements SlashCommand {
 	name: string = 'intro';
-	description: string =
-		'Set your intro theme from an audio/video file (the first 10 seconds are used)';
+	description: string = 'Set or remove your personal intro theme';
 	options: (Option | Subcommand)[] = [
-		new Option(
-			'clip',
-			'An audio or video file to use as your intro',
-			ApplicationCommandOptionType.Attachment,
-			true
-		),
+		new Subcommand('set', 'Set your intro theme from an audio/video file', [
+			new Option(
+				'clip',
+				'An audio or video file (the first 10 seconds are used)',
+				ApplicationCommandOptionType.Attachment,
+				true
+			),
+		]),
+		new Subcommand('remove', 'Remove your own intro theme'),
 	];
 	requiredPermissions: bigint[] = [];
 	guildRequired?: boolean = true;
@@ -39,6 +42,27 @@ export class Intro implements SlashCommand {
 		interaction: ChatInputCommandInteraction<CacheType>
 	): Promise<any> {
 		try {
+			const introPath = `./data/intros/${interaction.guild!.id}/${interaction.user.id}.mp4`;
+
+			if (interaction.options.getSubcommand() === 'remove') {
+				try {
+					await unlink(introPath);
+					return interaction.reply({
+						content: 'Your intro theme has been removed.',
+						flags: MessageFlags.Ephemeral,
+					});
+				} catch (err: any) {
+					if (err && err.code === 'ENOENT') {
+						return interaction.reply({
+							content: "You don't have an intro set.",
+							flags: MessageFlags.Ephemeral,
+						});
+					}
+					throw err;
+				}
+			}
+
+			// --- set ---
 			let userArray = silencedUsers.ensure(interaction.guild!.id, []);
 			if (userArray.includes(interaction.user.id)) {
 				return interaction.reply({
@@ -79,12 +103,11 @@ export class Intro implements SlashCommand {
 
 			const dir = `./data/intros/${interaction.guild!.id}`;
 			mkdirpSync(dir);
-			const outPath = `${dir}/${interaction.user.id}.mp4`;
 			const tempPath = `${dir}/${interaction.user.id}.upload`;
 
 			await writeFile(tempPath, buffer);
 			try {
-				await transcodeIntro(tempPath, outPath);
+				await transcodeIntro(tempPath, introPath);
 			} finally {
 				await unlink(tempPath).catch(() => {});
 			}
