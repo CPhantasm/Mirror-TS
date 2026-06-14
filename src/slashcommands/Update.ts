@@ -1,7 +1,7 @@
 
 import { Bot } from '../Bot';
 
-import {
+import { MessageFlags,
 	CacheType,
 	EmbedBuilder,
 	PermissionFlagsBits,
@@ -51,7 +51,7 @@ export class Update implements SlashCommand {
 				interaction.reply({
 					content:
 						'This command is only for people with Administrator permissions',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 				return;
 			}
@@ -65,16 +65,17 @@ export class Update implements SlashCommand {
 				interaction.reply({
 					content:
 						'Mirror does not have permissions to send messages in the specified channel',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 				return;
 			}
-			if (channel!.type !== ChannelType.GuildText)
+			if (channel!.type !== ChannelType.GuildText) {
 				interaction.reply({
 					content: 'Channel must be a text channel',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
-			//var enmapChannel = updateChannels.ensure(interaction.guild.id, '');
+				return;
+			}
 			updateChannels.set(interaction.guild.id, channel?.id);
 			let embed = new EmbedBuilder()
 				.setColor(colorCheck(interaction.guild!.id))
@@ -87,7 +88,7 @@ export class Update implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

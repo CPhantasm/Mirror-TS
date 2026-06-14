@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, CacheType, EmbedBuilder, ColorResolvable } from "discord.js";
+import { MessageFlags, ChatInputCommandInteraction, CacheType, EmbedBuilder, ColorResolvable } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
 import Enmap from "enmap";
 import { Bot } from "../Bot";
@@ -40,7 +40,7 @@ export class ServerColor implements SlashCommand {
             bot.logger.commandError(interaction.channel!.id, this.name, err);
             return interaction.reply({
                 content: 'Error: contact a developer to investigate',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
 
         }

@@ -1,4 +1,4 @@
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	PermissionFlagsBits,
@@ -34,17 +34,17 @@ export class ManagerRole implements SlashCommand {
 			return interaction.reply({
 				content:
 					'Cannot set externally managed roles, or bot roles as Mirror Managers',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 		let roleArray = managerRoles.ensure(interaction.guild!.id, []);
 		if (roleArray.includes(role.id)) {
 			let ptr = roleArray.indexOf(role.id);
-			roleArray.splice(ptr);
+			roleArray.splice(ptr, 1);
 			managerRoles.set(interaction.guild!.id, roleArray);
 			return interaction.reply({
 				content: `Successfully removed ${role} as a Mirror Manager`,
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 
@@ -53,14 +53,14 @@ export class ManagerRole implements SlashCommand {
 			return interaction.reply({
 				content:
 					'Mirror limits servers to 15 manager roles. Please remove manager roles before adding more. If this is not possible contact a developer for more options',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 		roleArray.push(role.id);
 		managerRoles.set(interaction.guild!.id, roleArray);
 		return interaction.reply({
 			content: `Successfully added ${role} as a Mirror Manager`,
-			ephemeral: true,
+			flags: MessageFlags.Ephemeral,
 		});
 	}
 	guildRequired?: boolean | undefined = true;

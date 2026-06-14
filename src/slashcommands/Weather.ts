@@ -2,7 +2,7 @@
 //Call: Slash command weather or w
 //Returns weather from a single specified city
 
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction, CacheType, EmbedBuilder, PermissionFlagsBits,
 	ApplicationCommandOptionType
 } from 'discord.js';
@@ -89,7 +89,7 @@ export class Weather implements SlashCommand {
 				: interaction.options.getString('city');
 			//Pulls data from the API and stores as a JSON object
 			let res = await fetch(
-				`http://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${config.weather_token}`
+				`http://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(query ?? '')}&appid=${config.weather_token}`
 			);
 			jsonData = await res.json();
 			if (jsonData.cod == '404') {
@@ -132,7 +132,7 @@ export class Weather implements SlashCommand {
 			let kmhWind = Math.round(jsonData.wind.speed * 3.6);
 			let mphWind = Math.round(kmhWind * 0.621371);
 			let windDir =
-				mphWind == 0 ? '' : cardinalDir[Math.round(jsonData.wind.deg / 22.8)]; // if there's no wind, set it to blank
+				mphWind == 0 ? '' : cardinalDir[Math.round(jsonData.wind.deg / 22.5)]; // if there's no wind, set it to blank
 
 			//capitalizes the first letter of each word in the string called
 			let str = '';
@@ -174,7 +174,7 @@ export class Weather implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

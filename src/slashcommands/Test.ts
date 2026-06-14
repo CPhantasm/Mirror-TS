@@ -1,7 +1,7 @@
 //Call: Slash command test
 //Returns a greeting reply to the user
 import { Bot } from '../Bot';
-import { PermissionFlagsBits, ChatInputCommandInteraction, CacheType } from 'discord.js';
+import { MessageFlags, PermissionFlagsBits, ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { SlashCommand } from './SlashCommand';
 import { Option, Subcommand } from './Option';
 
@@ -21,7 +21,7 @@ export class Test implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

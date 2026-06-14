@@ -1,5 +1,5 @@
 
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	EmbedBuilder,
@@ -42,7 +42,7 @@ export class SilenceMember implements SlashCommand {
 					.setDescription('Bots cannot be silenced');
 				return interaction.reply({
 					embeds: [embed],
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			let userArray = silencedUsers.ensure(interaction.guild!.id, []);
@@ -53,7 +53,7 @@ export class SilenceMember implements SlashCommand {
 				silencedUsers.set(interaction.guild!.id, userArray);
 				return interaction.reply({
 					content: `Successfully unsilenced ${badUser} `,
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 
@@ -63,7 +63,7 @@ export class SilenceMember implements SlashCommand {
 			) {
 				return interaction.reply({
 					content: 'Administrators cannot be silenced',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 
@@ -71,20 +71,20 @@ export class SilenceMember implements SlashCommand {
 				return interaction.reply({
 					content:
 						'Servers are limited to 100 members silenced. Please unsilence somemembers before silencing more.  If this is not possible please contact a developeer for more options',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			userArray.push(badUser?.id);
 			silencedUsers.set(interaction.guild!.id, userArray);
 			return interaction.reply({
 				content: `Successfully silenced ${badUser} `,
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		} catch (err) {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			return interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 	}

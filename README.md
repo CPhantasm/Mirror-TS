@@ -17,31 +17,23 @@ Interested in adding Mirror to your server? Click [here](https://discord.com/api
 
 ## Essential Commands
 
-### Introthemes
+### Birthdays
 
-Set your introtheme with [`/intro`](src/slashcommands/Intro.ts) to play an audio clip every time you join the chat channel!
+Members save their birthday with [`/birthday`](src/slashcommands/Birthday.ts); managers set the announcement channel and time with [`/birthdayconfig`](src/slashcommands/BirthdayConfig.ts) and can review everyone's saved dates with [`/birthdaylist`](src/slashcommands/BirthdayList.ts).
 
-Find a YouTube video shorter than 10 seconds and paste the link into 'video' field.
-
-### Music Player
-
-Mirror allows users to listen to songs and playlists from Spotify, YouTube, and Soundcloud.  Using [`/play`](src/slashcommands/Play.ts) or [`/playnext`](src/slashcommands/PlayNext.ts) you can search for songs or paste your own song or playlist and it will add it to the queue.
-
-The Music functionality includes many commands:
- - [`/shuffle`](src/slashcommands/Shuffle.ts)
- - [`/loop`](src/slashcommands/Loop.ts)
- - [`/resume`](src/slashcommands/Resume.ts), [`/pause`](src/slashcommands/Pause.ts)
- - [`/queue`](src/slashcommands/Queue.ts), [`/clearqueue`](src/slashcommands/ClearQueue.ts)
- - [`/skip`](src/slashcommands/Skip.ts)
- and more!
- 
 ### Informative Commands
 
  - [`/weather`](src/slashcommands/Weather.ts) Current weather for a provided city.
 
- - [`/stock`](src/slashcommands/Stock.ts) Daily summaries for up to 10 provided tickers.
-
  - [`/nasa`](src/slashcommands/Nasa.ts) Display the NASA Astronomy Picture of the Day.
+
+ - [`/stock`](src/slashcommands/Stock.ts) Stock summary for a provided ticker. *(Needs an updated market-data provider — the previous IEX Cloud API has shut down.)*
+
+### Fun & Utility
+
+Poll your server with [`/poll`](src/slashcommands/Poll.ts), roll dice with [`/roll`](src/slashcommands/Roll.ts), and browse everything with [`/help`](src/slashcommands/Help.ts). Managers can tailor Mirror via [`/config`](src/slashcommands/Config.ts), [`/servercolor`](src/slashcommands/ServerColor.ts), and [`/managerrole`](src/slashcommands/ManagerRole.ts).
+
+> **Note:** The legacy music player and the `/intro` command were removed in the current refactor and are no longer part of Mirror.
 
 ## Contributing to Mirror
 

@@ -1,7 +1,7 @@
 
 //Call: Slash command help
 //Returns the info command
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	EmbedBuilder,
@@ -173,7 +173,7 @@ export class Help implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

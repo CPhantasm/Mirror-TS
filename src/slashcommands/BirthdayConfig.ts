@@ -1,4 +1,4 @@
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	EmbedBuilder,
@@ -81,7 +81,7 @@ export class BirthdayConfig implements SlashCommand {
 				return interaction.reply({
 					content:
 						'This command is only for people with Administrator permissions',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 
@@ -92,7 +92,7 @@ export class BirthdayConfig implements SlashCommand {
 			if (guildChannel.type !== ChannelType.GuildText) {
 				return interaction.reply({
 					content: 'Please enter a valid text channel',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 
@@ -105,15 +105,15 @@ export class BirthdayConfig implements SlashCommand {
 				return interaction.reply({
 					content:
 						'Invalid hour, please use military format (0-23) where 0 represents midnight.',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			//get the minute and ensure that it is valid
 			let minute = interaction.options.getInteger('minute', true);
-			if (minute > 60 || minute < 0) {
+			if (minute > 59 || minute < 0) {
 				return interaction.reply({
 					content: 'Invalid minute, please provide an integer between 0 and 60',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 
@@ -156,7 +156,7 @@ export class BirthdayConfig implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

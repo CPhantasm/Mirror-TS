@@ -2,7 +2,7 @@
 //Call: Slash command gavin
 //Returns Gavins gym PR's, options to allow you to set new PRs from the text channel.
 
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	EmbedBuilder,
@@ -14,6 +14,7 @@ import { Bot } from '../Bot';
 import { colorCheck } from '../resources/embedColorCheck';
 import { Option, Subcommand } from './Option';
 import { SlashCommand } from './SlashCommand';
+import { existsSync } from 'fs';
 
 //If you add choices to a slash command's options, they will be the only thing a user can select/input.
 //This is perfect for validating input before we even have the command run on our side.
@@ -103,11 +104,15 @@ export class Gavin implements SlashCommand {
 					return;
 				}
 				const embed = new EmbedBuilder()
-					.setImage('attachment://gavin.png')
 					.setColor(colorCheck(interaction.guild!.id))
 					.setDescription(`GAVIN'S ${type!.toUpperCase()} PR: ${toprint}`)
 					.setFooter({ text: `Requested by ${interaction.user.tag}` });
-				interaction.reply({ embeds: [embed], files: ['./img/gavin.png'] });
+				if (existsSync('./img/gavin.png')) {
+					embed.setImage('attachment://gavin.png');
+					interaction.reply({ embeds: [embed], files: ['./img/gavin.png'] });
+				} else {
+					interaction.reply({ embeds: [embed] });
+				}
 				return;
 			}
 			if (options.getSubcommand() == 'setlift') {
@@ -133,7 +138,7 @@ export class Gavin implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

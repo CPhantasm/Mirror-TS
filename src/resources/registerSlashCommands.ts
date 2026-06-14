@@ -1,41 +1,8 @@
 import { Bot } from '../Bot';
-import { promisify } from 'util';
-import fs from 'fs';
-import path from 'path';
 
-async function deleteCommandsFromGuild(
-	bot: Bot,
-	guildId: string,
-	hardDelete?: boolean
-) {
-	if (typeof hardDelete == undefined) hardDelete = false;
-	let guild = await bot.client.guilds.fetch(guildId);
-	let guildCommands = await guild.commands.fetch();
-	for (let [commandKey, registeredCommand] of guildCommands!) {
-		let command = bot.slashCommands.find(
-			(command) => command.name === registeredCommand.name
-		);
-		if (!hardDelete && command) continue;
-		await registeredCommand.delete();
-		bot.logger.info(
-			`Deleted ${registeredCommand.name} from the guild ${guildId} command cache`
-		);
-	}
-}
-
-async function deleteCommandsFromApplication(bot: Bot, hardDelete?: boolean) {
-	if (typeof hardDelete == undefined) hardDelete = false;
-	let commands = await bot.client.application?.commands.fetch();
-	for (let [commandKey, registeredCommand] of commands!) {
-		let command = bot.slashCommands.find(
-			(command) => command.name === registeredCommand.name
-		);
-		if (!hardDelete && command) continue;
-		await registeredCommand.delete();
-		bot.logger.info(
-			`Deleted ${registeredCommand.name} from the application command cache`
-		);
-	}
+async function clearGuildCommands(bot: Bot, guildId: string) {
+	const guild = bot.client.guilds.cache.get(guildId);
+	if (guild) await guild.commands.set([]);
 }
 
 export async function registerSlashCommands(bot: Bot): Promise<boolean> {
@@ -43,42 +10,29 @@ export async function registerSlashCommands(bot: Bot): Promise<boolean> {
 	if (!bot.client.application?.owner) await bot.client.application?.fetch(); // make sure the bot is fully fetched
 	await bot.client.guilds.fetch(); // make sure the guilds are fully fetched
 
+	// build the command payloads once. A single bulk overwrite (.set) registers everything
+	// atomically, removes any stale commands (e.g. the retired music commands), and avoids the
+	// per-command rate limits the old create-in-a-loop approach was prone to.
+	const commandData = bot.slashCommands.map((command) => ({
+		name: command.name,
+		description: command.description,
+		options: command.options.map((option) => option.toJson()),
+	}));
+
 	if (bot.mode == 'debug') {
-		await deleteCommandsFromGuild(bot, bot.test_server);
-		// we don't want to double up our command entries, so remove them from the global cache
-		await deleteCommandsFromApplication(bot, true);
+		// guild-scoped commands update instantly -- clear the global set so we don't see duplicates
+		await bot.client.application?.commands.set([]);
+		const guild = bot.client.guilds.cache.get(bot.test_server);
+		if (guild) await guild.commands.set(commandData as any);
+		bot.logger.info(
+			`Registered ${commandData.length} guild commands to test server ${bot.test_server}`
+		);
 	} else {
-		// we want to remove our local guild commands from all servers, so we don't duplicate command entries
-		// this may take a long, long while depending on how many servers the bot was run in debug mode
-		let guildIds = bot.client.guilds.cache.map((guild) => guild.id);
-		for (let guild of guildIds) {
-			await deleteCommandsFromGuild(bot, guild, true);
-		}
-		deleteCommandsFromApplication(bot);
+		// debug mode only ever registers guild commands to the test server, so clearing it is
+		// enough to drop leftovers before we register everything globally
+		await clearGuildCommands(bot, bot.test_server);
+		await bot.client.application?.commands.set(commandData as any);
+		bot.logger.info(`Registered ${commandData.length} global commands`);
 	}
-
-	bot.slashCommands.forEach(async (command) => {
-		let JsonOptionData = [];
-		for (let option of command.options) {
-			JsonOptionData.push(option.toJson());
-		}
-
-		let registerData = {
-			name: command.name,
-			description: command.description,
-			options: JsonOptionData,
-		};
-		bot.logger.info(`Registering slash command ${command.name}`);
-		//guild scope commands update instantly -- globally set ones are cached for an hour. If we are debugging, use guild scope
-		if (bot.mode == 'debug') {
-			const registeredCommand = await bot.client.guilds.cache
-				.get(bot.test_server)
-				?.commands.create(registerData);
-		} else {
-			const registeredCommand = await bot.client.application?.commands.create(
-				registerData
-			); //create it globally if we aren't debugging
-		}
-	});
 	return true;
 }

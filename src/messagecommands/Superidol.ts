@@ -37,6 +37,9 @@ export class Superidol implements MessageCommand {
 			connection.subscribe(player);
 			const superidolmp3 = createAudioResource('./music/superidol.mp3');
 			player.play(superidolmp3);
+			player.on('error', (err) => {
+				bot.logger.commandError(channel.id, this.name, err);
+			});
 		} catch (err) {
 			bot.logger.commandError(message.channel!.id, this.name, err);
 			message.reply({

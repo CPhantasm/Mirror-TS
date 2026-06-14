@@ -1,12 +1,11 @@
 //Call: Slash command join
 //Joins the voice channel and plays mirror intro theme?
 
-import {
-	createAudioPlayer,
+import { createAudioPlayer,
 	createAudioResource,
 	joinVoiceChannel,
 } from '@discordjs/voice';
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	GuildMember,
@@ -42,13 +41,16 @@ export class Sicko implements SlashCommand {
 			connection.subscribe(audio);
 			const mirrormp3 = createAudioResource('./music/sicko.mp3');
 			audio.play(mirrormp3);
+			audio.on('error', (err) => {
+				bot.logger.commandError(interaction.channel?.id ?? '', this.name, err);
+			});
 			interaction.reply('reply lol');
 			return;
 		} catch (err) {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

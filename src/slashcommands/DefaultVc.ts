@@ -1,6 +1,6 @@
 
 import { createAudioPlayer, joinVoiceChannel } from '@discordjs/voice';
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	EmbedBuilder,
@@ -43,7 +43,7 @@ export class DefaultVc implements SlashCommand {
 				interaction.reply({
 					content:
 						'This command is only for people with Administrator permissions',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 				return;
 			}
@@ -51,14 +51,14 @@ export class DefaultVc implements SlashCommand {
 			if (!channel || channel.type !== ChannelType.GuildVoice) {
 				interaction.reply({
 					content: 'Channel must be a voice channel',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 				return;
 			}
 			if (!channel || !interaction.guild?.members.me?.permissionsIn(channel.id).has(PermissionFlagsBits.Connect)) {
 				interaction.reply({
 					content: 'I do not have permission to Connect to that VC',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 				return;
 			}
@@ -74,7 +74,7 @@ export class DefaultVc implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}
@@ -107,6 +107,7 @@ export async function launchVoice(bot: Bot): Promise<void> {
 			newNetworking?.on('stateChange', networkStateChangeHandler);
 		});
 		let player = createAudioPlayer();
+		player.on('error', (err) => bot.logger.error(err));
 		connection.subscribe(player);
 	});
 }

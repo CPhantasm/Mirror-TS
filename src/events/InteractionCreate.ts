@@ -1,5 +1,5 @@
 import { joinVoiceChannel } from '@discordjs/voice';
-import { CommandInteraction, GuildMember, EmbedBuilder, TextChannel, TextBasedChannel, GuildChannel, ChatInputCommandInteraction } from 'discord.js';
+import { MessageFlags, CommandInteraction, GuildMember, EmbedBuilder, TextChannel, TextBasedChannel, GuildChannel, ChatInputCommandInteraction } from 'discord.js';
 import { Bot } from '../Bot';
 import { managerCheck } from '../resources/managerCheck';
 
@@ -33,7 +33,7 @@ export class InteractionCreate implements EventHandler {
 				await interaction.reply({
 					content:
 						'This command can only be used by designated managers or admininstrators',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 				return;
 			}
@@ -43,7 +43,7 @@ export class InteractionCreate implements EventHandler {
 				await interaction.reply({
 					content:
 						'This command cannot be used by silenced members',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 				return;
 			}

@@ -1,15 +1,14 @@
 //Referenced from Sicko.ts
 //Call it when you're leaving to go eat food 
 
-import {
-	getVoiceConnection,
+import { getVoiceConnection,
 	joinVoiceChannel,
 	createAudioPlayer,
 	createAudioResource,
 	AudioPlayerStatus,
 	AudioPlayerError,
 } from '@discordjs/voice';
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	PermissionFlagsBits,
@@ -41,7 +40,6 @@ export class Munch implements SlashCommand {
 			// 	interaction.reply('Cant go munch while music is playing :sob:');
 			// 	return;
 			// }
-			interaction.reply('Audio munching not fully supported without audio player');
 			const connection = joinVoiceChannel({
 				channelId: state.channelId!,
 				guildId: interaction.guildId!,
@@ -51,6 +49,9 @@ export class Munch implements SlashCommand {
 			connection.subscribe(audio);
 			const munchmp3 = createAudioResource('./music/minecraft-eating-sound.mp3');
 			audio.play(munchmp3);
+			audio.on('error', (err) => {
+				bot.logger.commandError(interaction.channel?.id ?? '', this.name, err);
+			});
 			if (state.deaf) {
 				interaction.reply(`<@${interaction.user.id}>` + 'had a nice lunch.');
 				state.setDeaf(false, "no longer eating")
@@ -66,7 +67,7 @@ export class Munch implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

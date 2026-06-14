@@ -9,7 +9,7 @@ import {
 import { Bot } from '../Bot';
 import { Option, Subcommand } from './Option';
 import { SlashCommand } from './SlashCommand';
-import { bdayDates } from './Birthday';
+import { bdayDates, monthCode as monthToNumber } from './Birthday';
 import { colorCheck } from '../resources/embedColorCheck';
 
 type monthIndex = { [index: number]: string };
@@ -44,8 +44,8 @@ export class BirthdayList implements SlashCommand {
         memberFetch.forEach(async (member) => {
             let birthdate = bdayDates.get(member.id)
             if (!birthdate) return;
-            birthdate = birthdate.slice(' ').split('-');
-            list.push([member, parseInt(birthdate[1]), parseInt(birthdate[0])])
+            let stored = birthdate as { day: number; month: string };
+            list.push([member, monthToNumber[stored.month], stored.day])
         })
         list = sort(list);
         let pages = Math.floor(list.length / 24 + .99);

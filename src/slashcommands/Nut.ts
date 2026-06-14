@@ -1,5 +1,5 @@
 
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	EmbedBuilder,
@@ -8,10 +8,13 @@ import {
 	User
 } from 'discord.js';
 import Enmap from 'enmap';
+import { mkdirpSync } from 'mkdirp';
 import { Bot } from '../Bot';
 import { Option, Subcommand } from './Option';
 import { SlashCommand } from './SlashCommand';
 
+// better-sqlite3 will not create a missing directory, so ensure it exists before opening the db
+mkdirpSync('./db/nut');
 const nuts = new Enmap({
 	name: 'nut',
 	dataDir: './db/nut',
@@ -125,7 +128,7 @@ export class Nut implements SlashCommand {
 				//nuts.fetchEverything(); // Enmap 5 caches everything by default or doesn't support this
 				let guild = interaction.guild!;
 				let leaderboard: any[][] = [];
-				for (const item of Array.from(nuts.values())) {
+				for (const item of Array.from(nuts.entries())) {
 					try {
 						let member = await guild.members.fetch(item[0].toString());
 						leaderboard.push([member.user.username, item[1]]);
@@ -162,7 +165,7 @@ export class Nut implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			return interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 	}

@@ -15,6 +15,7 @@ export async function msgPermsCheck(
 	);
 	if (!(message.channel instanceof TextChannel)) return true; //we only need to care about permissions in guild text channels
 	let permissions = message.channel.permissionsFor(guildMember);
+	if (!permissions) return false;
 	for (let permission of permissionsToCheck) {
 		if (!permissions.has(permission)) return false;
 	}

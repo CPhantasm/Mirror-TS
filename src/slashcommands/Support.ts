@@ -1,4 +1,4 @@
-import {
+import { MessageFlags,
 	ChatInputApplicationCommandData,
 	ChatInputCommandInteraction,
 	CacheType,
@@ -31,7 +31,7 @@ export class Support implements SlashCommand {
 				.setDescription('Error: contact a developer to investigate');
 			interaction.reply({
 				embeds: [embed],
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

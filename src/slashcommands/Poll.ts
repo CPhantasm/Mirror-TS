@@ -1,7 +1,7 @@
 
 //Call: Slash command advpoll
 //Returns a custom in depth poll
-import {
+import { MessageFlags,
 	CacheType,
 	ChatInputCommandInteraction,
 	EmbedBuilder,
@@ -82,7 +82,7 @@ export class Poll implements SlashCommand {
 			//TODO: error test for empty arguments
 			let time = interaction.options.getInteger('time')!;
 			if (time >= 1500) {
-				return interaction.reply({ content: 'Your poll cannot be longer than 24 hours or 1440 minutes', ephemeral: true });
+				return interaction.reply({ content: 'Your poll cannot be longer than 24 hours or 1440 minutes', flags: MessageFlags.Ephemeral });
 			}
 
 			const embed = new EmbedBuilder()
@@ -185,7 +185,7 @@ export class Poll implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

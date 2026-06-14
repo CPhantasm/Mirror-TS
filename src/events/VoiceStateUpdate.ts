@@ -10,6 +10,7 @@ import {
 } from '@discordjs/voice';
 import { VoiceState } from 'discord.js';
 import { silencedUsers } from '../slashcommands/SilenceMember';
+import { existsSync } from 'fs';
 
 export class VoiceStateUpdate implements EventHandler {
 	eventName = 'voiceStateUpdate';
@@ -63,10 +64,13 @@ export class VoiceStateUpdate implements EventHandler {
 			});
 		}
 		let audioPlayer = createAudioPlayer();
+		audioPlayer.on('error', (err) => {
+			bot.logger.error(err);
+		});
 		connection.subscribe(audioPlayer);
-		const intro = createAudioResource(
-			`./data/intros/${newState.guild.id}/${newState.member!.id}.mp4`
-		);
+		const introPath = `./data/intros/${newState.guild.id}/${newState.member!.id}.mp4`;
+		if (!existsSync(introPath)) return;
+		const intro = createAudioResource(introPath);
 		audioPlayer.play(intro);
 		return;
 	}

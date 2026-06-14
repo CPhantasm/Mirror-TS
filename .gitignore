@@ -1,7 +1,7 @@
 config.json
 node_modules/
-package-lock.json
 data/
+db/
 local_files/
 mirror.flp
 logs/

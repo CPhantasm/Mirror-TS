@@ -1,6 +1,6 @@
 //Call: Slash command nasa
 //Returns the Nasa Image of the Day and corresponding description
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	EmbedBuilder,
@@ -36,7 +36,7 @@ export class Nasa implements SlashCommand {
 			bot.logger.debug(jsonData); // <- remove eventually;
 			const embed = new EmbedBuilder()
 				.setColor(colorCheck(interaction.guild!.id))
-				.setDescription(`${jsonData.explanation.substr(0, 200)}...`)
+				.setDescription(`${jsonData.explanation.slice(0, 200)}...`)
 				.setFooter({ text: footer })
 				.setImage(jsonData.url)
 				.setTitle(`**${jsonData.title}**`)
@@ -47,7 +47,7 @@ export class Nasa implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

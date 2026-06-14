@@ -1,4 +1,4 @@
-import { bdayDates } from '../slashcommands/Birthday';
+import { bdayDates, monthCode } from '../slashcommands/Birthday';
 import cron from 'node-cron';
 import { Bot } from '../Bot';
 import { EmbedBuilder, TextChannel, User } from 'discord.js';
@@ -30,18 +30,18 @@ export async function birthdayTimer(guild: string, bot: Bot): Promise<void> {
 		//this will run daily at the specified time:
 		//create a day object, ensure that Mirror knows what date to scan
 		let today = new Date();
-		let dayString = new String();
 		let dateMod = infoArray[2];
-		if (dateMod == 'x') today.setDate(today.getDate());
 		if (dateMod == 'minus') today.setDate(today.getDate() - 1); //yes these look weird but the Date fxn is smart enough to make the adjustment between months/years
 		if (dateMod == 'plus') today.setDate(today.getDate() + 1);
-		dayString = `${today.getDate()}-${today.getMonth() + 1}`;
+		let todayDay = today.getDate();
+		let todayMonth = today.getMonth() + 1;
 
 		//for every birthday in the enmap, check if it matches the current date
 		// Enmap iterator fix
 		for (const [userId, bday] of Array.from(bdayDates.entries())) {
 			//if a persons birthday matches the current date we are checking
-			if (dayString == bday) {
+			let stored = bday as { day: number; month: string };
+			if (stored && stored.day === todayDay && monthCode[stored.month] === todayMonth) {
 				//TODO: check if the user exists in the guild
 				let birthGuild = bot.client.guilds.cache.get(guild);
 				if (!birthGuild) return;

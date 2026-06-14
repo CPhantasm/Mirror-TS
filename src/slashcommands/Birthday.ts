@@ -1,5 +1,5 @@
 
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	EmbedBuilder,
@@ -14,7 +14,7 @@ import { silencedUsers } from './SilenceMember';
 import { SlashCommand } from './SlashCommand';
 
 type monthIndex = { [index: string]: number };
-const monthCode = {
+export const monthCode = {
 	january: 1,
 	february: 2,
 	march: 3,
@@ -129,7 +129,7 @@ export class Birthday implements SlashCommand {
 			if (userArray.includes(interaction.user.id)) {
 				return interaction.reply({
 					content: 'Silenced users cannot use this command',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 
@@ -143,7 +143,7 @@ export class Birthday implements SlashCommand {
 				) {
 					return interaction.reply({
 						content: 'Please enter a valid date',
-						ephemeral: true,
+						flags: MessageFlags.Ephemeral,
 					});
 				}
 
@@ -191,7 +191,7 @@ export class Birthday implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			return interaction.reply({
 				content: 'Error, contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 	}

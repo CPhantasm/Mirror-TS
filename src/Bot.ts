@@ -55,7 +55,8 @@ export class Bot {
 		await importSlashCommands(this);
 		await importMessageCommands(this);
 		await importKeywords(this);
-		this.client.login(this.token);
-
+		this.client.login(this.token).catch((err) => {
+			this.logger.error(err);
+		});
 	}
 }

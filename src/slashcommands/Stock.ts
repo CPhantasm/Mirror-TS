@@ -1,7 +1,7 @@
 //Call: Slash command stock or s
 //Returns 1-10 specified stocks in embed form
 
-import {
+import { MessageFlags,
 	ChatInputApplicationCommandData,
 
 	CacheType,
@@ -132,7 +132,7 @@ export class Stock implements SlashCommand {
 				if (test?.value == 'invalid-json') {
 					interaction.reply({
 						content: 'Invalid ticker symbol.',
-						ephemeral: true,
+						flags: MessageFlags.Ephemeral,
 					});
 					return;
 				}
@@ -140,7 +140,7 @@ export class Stock implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			interaction.reply({
 				content: 'Error: contact a developer to investigate',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

@@ -13,6 +13,7 @@ export async function permissionsCheck(
 	if (!(interaction.channel instanceof TextChannel)) return true; //we only need to care about permissions in guild text channels
 	let guildMember = await interaction.guild.members.fetch(bot.client.user!);
 	let permissions = interaction.channel.permissionsFor(guildMember);
+	if (!permissions) return false;
 	for (let permission of permissionsToCheck) {
 		if (!permissions.has(permission)) return false;
 	}

@@ -1,6 +1,5 @@
-
 import { joinVoiceChannel } from "@discordjs/voice";
-import { ChatInputCommandInteraction, GuildMember, EmbedBuilder } from "discord.js";
+import { MessageFlags, ChatInputCommandInteraction, GuildMember, EmbedBuilder } from "discord.js";
 import { Bot } from "../Bot";
 import { colorCheck } from "./embedColorCheck";
 
@@ -12,7 +11,7 @@ export function voiceCommandCheck(bot: Bot, interaction: ChatInputCommandInterac
     //if user is not connected
     if (!state) {
         embed.setDescription('You are not connected to a voice channel!');
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
         return false;
     }
 
@@ -29,7 +28,7 @@ export function voiceCommandCheck(bot: Bot, interaction: ChatInputCommandInterac
             embed.setDescription(
                 'Mirror is not connected to a voice channel, use `/ join`'
             );
-            interaction.reply({ embeds: [embed], ephemeral: true });
+            interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
             return false;
         }
     }
@@ -38,7 +37,7 @@ export function voiceCommandCheck(bot: Bot, interaction: ChatInputCommandInterac
         embed.setDescription(
             'Mirror is not in your voice channel! To use voice commands join the channel mirror is sitting in, or use `join` to move it to your call'
         );
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
         return false;
     }
     return true;

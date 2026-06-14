@@ -1,5 +1,5 @@
 
-import {
+import { MessageFlags,
 	ChatInputCommandInteraction,
 	CacheType,
 	EmbedBuilder,
@@ -151,7 +151,7 @@ export class Config implements SlashCommand {
 			bot.logger.commandError(interaction.channel!.id, this.name, err);
 			return interaction.reply({
 				content: 'Error detected, contact an admin to investigate.',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 	}
