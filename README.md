@@ -17,6 +17,10 @@ Interested in adding Mirror to your server? Click [here](https://discord.com/api
 
 ## Essential Commands
 
+### Introthemes
+
+Set a personal intro theme with [`/intro`](src/slashcommands/Intro.ts) by uploading a short audio or video clip — Mirror trims it to the first 10 seconds and plays it whenever you join the voice channel Mirror is sitting in (configure that channel with [`/defaultvc`](src/slashcommands/DefaultVc.ts)). Managers can clear a member's intro with [`/removeintro`](src/slashcommands/RemoveIntro.ts).
+
 ### Birthdays
 
 Members save their birthday with [`/birthday`](src/slashcommands/Birthday.ts); managers set the announcement channel and time with [`/birthdayconfig`](src/slashcommands/BirthdayConfig.ts) and can review everyone's saved dates with [`/birthdaylist`](src/slashcommands/BirthdayList.ts).
@@ -33,7 +37,7 @@ Members save their birthday with [`/birthday`](src/slashcommands/Birthday.ts); m
 
 Poll your server with [`/poll`](src/slashcommands/Poll.ts), roll dice with [`/roll`](src/slashcommands/Roll.ts), and browse everything with [`/help`](src/slashcommands/Help.ts). Managers can tailor Mirror via [`/config`](src/slashcommands/Config.ts), [`/servercolor`](src/slashcommands/ServerColor.ts), and [`/managerrole`](src/slashcommands/ManagerRole.ts).
 
-> **Note:** The legacy music player and the `/intro` command were removed in the current refactor and are no longer part of Mirror.
+> **Note:** The legacy music player was removed in the current refactor and is no longer part of Mirror.
 
 ## Contributing to Mirror
 
